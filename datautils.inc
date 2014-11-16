@@ -2,15 +2,17 @@
 // connect to the database for all pages
 global $mysqli;
 
+include "../.DBParamInfo";
+
 if (!isset($_SESSION['TEST_MODE'])) {
 	// production database
-	$db = "pwcmbrdb";
+	$db = ProdDBName;
 		}
 else {
 	// test database
-	$db = "mbrtestdb";
+	$db = TestDBName;
 	}
-$mysqli = new mysqli("localhost", "PWCDbUser", "hROdKzvYOtHG", $db);
+$mysqli = new mysqli("localhost", DBUserName, DBPassword, $db);
 
 if ($mysqli->connect_errno) {
 		$errno = $mysqli->connect_errno;
