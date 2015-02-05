@@ -92,7 +92,7 @@ function format_record($r) {
 global $hitcount;
 $label = "";
 if (strlen($r[Organization]) > 0)  $label .= $r[Organization] . "<br>"; 
-else $label .= '<br>';
+else $label .= '';
 $label .= "$r[NameLabel1stline]<br>$r[AddressLine]<br>$r[City], $r[State]  $r[ZipCode]";
 $em = "<a href=\"mailto:$r[EmailAddress]\">$r[EmailAddress]</a>";
 $hitcount++;
@@ -100,17 +100,34 @@ print <<<rcdPage
 <strong>MCID: $r[MCID]</strong><br>
 <table cellpadding="0" cellspacing="0" border="1" width="100%">
 <tr>
-<td width="30%" valign="top"><u>Mailing Label:</u><br>
-<table cellpadding="0" cellspacing="0" border="1" width="100%">
+<td width="25%" valign="top"><u>Mailing Label:</u><br>
+<table cellpadding="0" cellspacing="0" border="1" width="100%"><tr><td>&nbsp;</td></tr>
 <tr><td valign="top" bgcolor="#E6E6FA">$label</td></tr>
 </table></td>
 
-<td width="40%" valign="top"><u>Contact Info:</u><br>FName: $r[FName]<br>LName: $r[LName]<br>Email: $em<br>Phone: $r[PrimaryPhone]</td>
+<td width="25%" valign="top"><u>Contact Info:</u><br>FName: $r[FName]<br>LName: $r[LName]<br>Email: $em<br>Phone: $r[PrimaryPhone]</td>
 <td><u>Membership Info:</u><br>Type: $r[MemType]<br>Date Joined: $r[MemDate]<br>Status: $r[MemStatus]<br>InActive: $r[Inactive]<br>Date Inactive: $r[Inactivedate]</td>
-</tr>
-</table><br>
-</body></html>
+
 rcdPage;
+
+echo '<td width="25%" valign="top">Volunteer Activities<br>';
+$lists = $r[Lists];
+if (strlen($lists) == 0) {
+	echo "&nbsp;&nbsp;&nbsp;&nbsp;==NONE=="; }
+else {
+	$liststr = readdblist('EmailLists');
+	$listarray = formatdbrec($liststr);
+	$vollists = explode(",", rtrim($lists));
+//	echo '<pre>vol list '; print_r($vollists); echo '</pre>';
+//	echo '<pre> vol cats '; print_r($listarray); echo '</pre>';
+	foreach ($vollists as $v) {
+		if (isset($listarray[$v])) echo "&nbsp;&nbsp;&nbsp;&nbsp;$listarray[$v]<br>";
+		}
+	echo '</td>';
+	}
+
+echo '</tr></table>';
+
 
 	return;
 	}

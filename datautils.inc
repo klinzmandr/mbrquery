@@ -183,6 +183,36 @@ function writemaintlist($filename,$content) {
 	file_put_contents("$filename", $content);
 	}
 
+// --------------------- db configtable utilities ----------------------------------------
+// 'configtable' column names: CFGId, CfgName, CfgText
+// read db table item
+function readdblist($listname) {
+	$sqldb = "SELECT * FROM `configtable` WHERE `CfgName` = '$listname';";
+	//echo "sql: $sqldb\n<br>";
+	$res = doSQLsubmitted($sqldb);
+	$r = $res->fetch_assoc();
+	$rc = $res->num_rows;
+	//echo "rc: $rc<br>";
+	//echo "<pre> cfg "; print_r($r); echo '</pre>';
+	return($r[CfgText]);
+	}
+
+// format text blob from db into an array
+function formatdbrec($txt) {
+	$res = array();
+	$lines = explode("\n",$txt); 
+	foreach ($lines as $l) {
+		$l = rtrim($l);
+		if (strlen($l) <= 0) { continue; } 
+		if (substr_compare($l,'//',0,2) == 0) { continue; }
+		list($tla,$desc) = explode(":", $l);
+		$res[$tla] = $desc;
+		//echo "tla:$tla, desc:$desc<br>";
+		}
+	return($res);
+	}
+
+
 // ------------------- calc and return expiration date -----------------
 function calcexpirationdate() {
 	return(date('Y-m-01', strtotime('-11 months')));									// this is the expiration period
