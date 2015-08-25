@@ -28,7 +28,7 @@ $mbrcnt = count($mbrarray);
 
 if (isset($_REQUEST['u'])) {
 	if (($_REQUEST['u']) != 'pelican') {
-		echo "<head><meta http-equiv=\"refresh\" content=\"2; URL=http://www.pacificwildlifecare.org/mbrship/index.php\"></head>";		
+		echo "<head><meta http-equiv=\"refresh\" content=\"2; URL=http://www.pacificwildlifecare.org/mbrquery/index.php\"></head>";		
 		echo "<h1>Password Failed.  Try again!</h1>";
 		echo "password entered: " . $_REQUEST['u'] . "<br>";
 		exit(0);
@@ -44,7 +44,7 @@ if (isset($_REQUEST['kkeystring'])) {
 		//echo "<br>MATCHED";
 		}
 	else {
-		echo "<head><meta http-equiv=\"refresh\" content=\"2; URL=http://www.pacificwildlifecare.org/mbrship/index.php\"></head>";
+		echo "<head><meta http-equiv=\"refresh\" content=\"2; URL=http://www.pacificwildlifecare.org/mbrquery/index.php\"></head>";
 		echo "<h1>Verification Failed.  Try again!</h1>";
 		exit(0);
 		}	
@@ -54,7 +54,17 @@ print <<<hdrPart
 <head><title>Member Query</title>
 <script>
 function loadfocus() {
-	document.qryForm.mcid.focus();
+	document.qryForm.qry.focus();
+	}
+</script>
+<script>
+function checkinput() {
+	var inf = document.getElementById("qry").value;
+	if (!inf.length) {
+		alert("Nothing entered to search for.");
+		return false;
+		}
+	return true;
 	}
 </script>
 </head>
@@ -65,25 +75,64 @@ hdrPart;
 
 print <<<formPart
 <div class="container">
-<form action="mbrqry.php" method="post"  name="qryForm">
-Search for: <input autofocus autocomplete="off" type="input" name="qry" value="$qry">&nbsp;&nbsp;
-<input type="submit" name="submit" value="Submit"><br>
+<form action="mbrqry.php" method="post"  name="qryForm" onsubmit="return checkinput()">
+Search for: <input autofocus autocomplete="off" type="input" id="qry" name="qry" value="$qry">&nbsp;&nbsp;
+<input type="submit" name="submit" value="Submit">&nbsp;&nbsp;Search for &apos;?&apos; for help comments.<br>
 </form>
+
 formPart;
 
 $reccount = 0;
 if ($submitdone) {
-	$sql = "SELECT * FROM `members` WHERE `MCID` LIKE '%$qry%' OR `FName` LIKE '%$qry%' OR `LName` LIKE '%$qry%' OR `NameLabel1stline` LIKE '%$qry%' OR `City` LIKE '%$qry%' OR `PrimaryPhone` LIKE '%$qry%' OR `EmailAddress` LIKE '%$qry%' ORDER BY `MCID` ASC;";
+	if ($qry == "?") {
+		echo "Asking for help?<br>";
+		}
+	else {
+	$sql = "SELECT * FROM `members` 
+WHERE `MCID` LIKE '%$qry%' 
+	OR `FName` LIKE '%$qry%' 
+	OR `LName` LIKE '%$qry%' 
+	OR `NameLabel1stline` LIKE '%$qry%' 
+	OR `AddressLine` LIKE '%$qry%' 
+	OR `City` LIKE '%$qry%' 
+	OR `ZipCode` LIKE '%$qry%'
+	OR `PrimaryPhone` LIKE '%$qry%' 
+	OR `EmailAddress` LIKE '%$qry%' 
+	OR `Lists` LIKE '%$qry%'
+ORDER BY `MCID` ASC;";
+
+//	echo "SQL: $sql<br>";
 	$res = doSQLsubmitted($sql);
 	$hitcount = $res->num_rows;
 	if ($hitcount > 0) {
+		echo "Records found: $hitcount<br>";
 		while ($r = $res->fetch_assoc()) {
 			format_record($r);
 			$reccount++;
 			}
 		}
+	echo "Records found: $reccount<br>";
+	}	// else
+	if ($reccount <= 0) {
+		echo '<ul>
+		<li>Try using one or more characters or a number string without spaces.</li>
+		<li>Space characters are significant and are searched for if entered.</li>
+		<li>Fields searched include the Member Id, first name, last name, address, city, state, zip, phone number, email address and volunteer lists.</li>
+		<li>Usually searching for the first 3 characters of a persons last name is the most direct query method.</li></ul>
+		NOTE: results listed are ALL member records containing the target string entered in ANY of the listed fields.<br><br>
+		Following is a list of volunteer group codes that can also be used. Use the code, not the description.  CAUTION: results may include member records that contain the character string but are NOT in the volunteer group.<br><br>
+		';
+		$dbrec = readdblist('EmailLists');
+		$emarray = formatdbrec($dbrec);
+//		echo '<pre>'; print_r($emarray); echo '</pre>';
+		echo '<ul><table><tr><th>CODE</th><th>Description</th></tr>';
+		foreach ($emarray as $k => $v) {
+			echo "<tr><td>$k</td><td>$v</td></tr>";
+			}
+		echo '</table></ul>';
+		}
 	}
-echo "Records found: $reccount<br>";
+
 echo '</div><script src="jquery.js"></script><script src="js/bootstrap.min.js"></script>
 </body></html>';
 exit(0);
