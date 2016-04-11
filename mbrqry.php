@@ -8,6 +8,7 @@
 </head>
 <body>
 <?php
+$url = "http://apps.pacwilica.org/mbrquery";
 /*
 echo "<hr>Debug Info: dump of input array POST name and value pairs<br>";
 foreach ($_REQUEST as $key => $value) { echo "Key: $key, Value: //$value<br>";  }
@@ -28,7 +29,7 @@ $mbrcnt = count($mbrarray);
 
 if (isset($_REQUEST['u'])) {
 	if (($_REQUEST['u']) != 'pelican') {
-		echo "<head><meta http-equiv=\"refresh\" content=\"2; URL=http://www.pacificwildlifecare.org/mbrquery/index.php\"></head>";		
+		echo "<head><meta http-equiv=\"refresh\" content=\"2; URL=$url/index.php\"></head>";		
 		echo "<h1>Password Failed.  Try again!</h1>";
 		echo "password entered: " . $_REQUEST['u'] . "<br>";
 		exit(0);
@@ -44,7 +45,7 @@ if (isset($_REQUEST['kkeystring'])) {
 		//echo "<br>MATCHED";
 		}
 	else {
-		echo "<head><meta http-equiv=\"refresh\" content=\"2; URL=http://www.pacificwildlifecare.org/mbrquery/index.php\"></head>";
+		echo "<head><meta http-equiv=\"refresh\" content=\"2; URL=$url/index.php\"></head>";
 		echo "<h1>Verification Failed.  Try again!</h1>";
 		exit(0);
 		}	
@@ -144,6 +145,8 @@ if (strlen($r[Organization]) > 0)  $label .= $r[Organization] . "<br>";
 else $label .= '';
 $label .= "$r[NameLabel1stline]<br>$r[AddressLine]<br>$r[City], $r[State]  $r[ZipCode]";
 $em = "<a href=\"mailto:$r[EmailAddress]\">$r[EmailAddress]</a>";
+$em2 = (strlen($r[EmailAddress2]) > 0) ? "<a href=\"mailto:$r[EmailAddress2]\">$r[EmailAddress2]</a>" : '';
+ ;
 $hitcount++;
 print <<<rcdPage
 <strong>MCID: $r[MCID]</strong><br>
@@ -154,10 +157,15 @@ print <<<rcdPage
 <tr><td valign="top" bgcolor="#E6E6FA">$label</td></tr>
 </table></td>
 
-<td width="25%" valign="top"><u>Contact Info:</u><br>FName: $r[FName]<br>LName: $r[LName]<br>Email: $em<br>Phone: $r[PrimaryPhone]</td>
+<td width="25%" valign="top"><u>Contact Info:</u><br>FName: $r[FName]<br>LName: $r[LName]<br>
+Email: $em<br>
+rcdPage;
+if (strlen($em2) > 0) echo "Email2: $em2<br>";
+print <<<rcdPage1
+Phone: $r[PrimaryPhone]</td>
 <td><u>Membership Info:</u><br>Type: $r[MemType]<br>Date Joined: $r[MemDate]<br>Status: $r[MemStatus]<br>InActive: $r[Inactive]<br>Date Inactive: $r[Inactivedate]</td>
 
-rcdPage;
+rcdPage1;
 
 echo '<td width="25%" valign="top">Volunteer Activities<br>';
 $lists = $r[Lists];
