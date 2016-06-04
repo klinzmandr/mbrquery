@@ -1,4 +1,5 @@
 <?php
+error_reporting(E_ERROR | E_WARNING | E_PARSE);
 // connect to the database for all pages
 global $mysqli;
 
