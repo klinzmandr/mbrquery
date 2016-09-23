@@ -146,7 +146,7 @@ function addlogentry($text) {
 	$seclevel = $_SESSION['SecLevel'];
 	$page = $_SERVER['PHP_SELF'];
 	$txt = addslashes($text);
-	$sql = "INSERT INTO `log` (`User`, `SecLevel`, `Page`, `SQL`) VALUES ('$user', '$seclevel', '$page', '$txt');";
+	$sql = "INSERT INTO `log` (`User`, `SecLevel`, `Page`, `Text`) VALUES ('$user', '$seclevel', '$page', '$txt');";
 	//echo "Log: $sql<br>";
 	$res = $mysqli->query($sql);
 	if (!$res) {
