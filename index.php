@@ -25,6 +25,7 @@ session_start();
 <form action="mbrqry.php" method="post" name="kapform" onsubmit="return validatekfld();">
 <table border="0" width="80%"><tr><td align="right">
 <img src="../captcha/index.php?<?php echo session_name()?>=<?php echo session_id()?>" style="vertical-align:middle" /></td>
+echo "../captcha/index.php?<?php echo session_name()?>=<?php echo session_id()?>";
 <td>Message Verification - enter letters at left.<br>
 <input autofocus type="text" name="kkeystring">(Reload page for new letters)<br>
 <input type="password" name="u">Enter usage password:<br>

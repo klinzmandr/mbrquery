@@ -18,7 +18,8 @@ echo "<hr>";
 */
 session_start();
 date_default_timezone_set('America/Los_Angeles');
-include 'datautils.inc';
+include 'datautils.inc.php';
+include 'vardump.inc.php';
 
 $mcid = isset($_REQUEST['mcid']) ? $_REQUEST['mcid'] : "";
 $qry = isset($_REQUEST['qry']) ? $_REQUEST['qry'] : "";
@@ -41,7 +42,7 @@ if (isset($_REQUEST['u'])) {
 if (isset($_REQUEST['kkeystring'])) {
 	//echo "checking keystring<br>";
 	if (isset($_SESSION['captcha_keystring']) && 
-				$_SESSION['captcha_keystring'] ==  $_REQUEST['kkeystring']) {
+		$_SESSION['captcha_keystring'] ==  $_REQUEST['kkeystring']) {
 		//echo "<br>MATCHED";
 		}
 	else {
