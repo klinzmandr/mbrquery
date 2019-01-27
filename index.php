@@ -7,6 +7,9 @@
 <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
 </head>
 <body>
+<script src="jquery.js"></script>
+<script src="js/bootstrap.min.js"></script>
+
 <script>
 function validatekfld() {
 // keystring?
@@ -21,21 +24,19 @@ if (ks.length < 1) {
 <?php 
 echo "<h1>Security Check</h1>";
 session_start();
+// echo '<pre>'; print_r($_SERVER); echo '</pre>';
 ?>
 <form action="mbrqry.php" method="post" name="kapform" onsubmit="return validatekfld();">
 <table border="0" width="80%"><tr><td align="right">
 <img src="../captcha/index.php?<?php echo session_name()?>=<?php echo session_id()?>" style="vertical-align:middle" /></td>
-echo "../captcha/index.php?<?php echo session_name()?>=<?php echo session_id()?>";
 <td>Message Verification - enter letters at left.<br>
-<input autofocus type="text" name="kkeystring">(Reload page for new letters)<br>
-<input type="password" name="u">Enter usage password:<br>
+<input autofocus autocomplete="off" type="text" name="kkeystring">(Reload page for new letters)<br>
+<input type="password" name="u" autocomplete="off">Enter usage password:<br>
 </td></tr>
 <tr><td align="right"><td>
 <input type="reset" value="Reset">
 <input name="check" type="submit" value="Submit"></td></tr>
 </form>  
 </table>
-<script src="jquery.js"></script>
-<script src="js/bootstrap.min.js"></script>
 </body>
 </html>
